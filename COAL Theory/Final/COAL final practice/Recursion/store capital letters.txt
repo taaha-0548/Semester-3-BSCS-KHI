@@ -1,0 +1,52 @@
+INCLUDE Irvine32.inc
+.data
+string byte "FAST National University,Karachi",0
+ccase dword 10 dup(0)
+count dword 0
+
+.code
+Capital_case proc uses esi  eax ebx edx, stri:ptr byte,index: dword, len:dword, cap:ptr dword
+
+mov ebx,stri
+mov esi, index
+cmp esi, len
+je done
+; now checking for capital letters
+mov al,[ebx+esi]
+cmp al,'A'
+jl next_char
+cmp al,'Z'
+jg next_char
+
+; now if found then..
+mov ebx,cap
+mov edx,count
+mov [ebx+edx*4],eax
+inc count
+
+next_char:
+; recursive call
+inc esi
+invoke Capital_case, stri,esi,len,cap
+
+
+
+done:
+ret
+Capital_case endp
+
+main proc    
+invoke Capital_case, addr string,0,lengthof string,addr ccase
+
+mov ecx,count
+mov ebx,offset ccase
+mov esi,0
+L1:
+    mov eax,[ebx+esi*4]
+    call writechar
+    inc esi
+    loop L1
+
+    exit
+main ENDP
+END main

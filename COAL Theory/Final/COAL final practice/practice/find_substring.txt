@@ -1,0 +1,57 @@
+include irvine32.inc
+
+.data
+string byte "ronald donar donarld bollard",0
+substring byte "rld",0
+len dword lengthof string-1
+s_len dword lengthof substring-1
+index dword -1
+.code
+find_substring proc uses esi edi ecx eax,strng:ptr byte, subst: ptr byte
+mov ecx, len
+
+mov ebx, strng
+mov edi,subst
+mov esi,0
+mov dh,[edi]
+L1:
+	mov dl,dh
+	cmp dl,[ebx+esi]
+	mov eax,esi
+	je check
+	back:
+	inc esi
+	mov edi,subst
+	
+	loop L1
+	jmp exiting
+check:
+	push esi
+	push ecx
+	mov ecx,s_len
+	L2:
+	
+	mov dl,[ebx+esi]
+	cmp dl,[edi]
+	jne not_found
+	inc esi
+	inc edi
+	loop L2
+	; if this loop is over then it means we found the string 
+	mov index,eax
+
+	exiting:
+ret
+not_found:
+	pop ecx
+	pop esi
+	jmp back
+find_substring endp
+main proc
+invoke find_substring,addr string, addr substring
+mov eax,index
+call writeint
+
+exit
+main ENDP
+END main

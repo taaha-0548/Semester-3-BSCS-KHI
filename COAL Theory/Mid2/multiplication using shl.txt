@@ -1,0 +1,22 @@
+INCLUDE Irvine32.inc
+;multiplying two numbers using left shift (power of 2)
+.data
+ n dword 13
+ result dword ?
+.code
+main PROC
+   ; multiply n with 10
+   ; first write the multiplier in the sum of powers of 2
+    ; (10)= 2^3+ 2^1
+    ;then individually left shift and add it to the result.
+    mov eax,13
+    shl eax,3 ; eax= eax* (2)^3 =13 *8
+    add result,eax ; result =104
+    mov eax,13  
+    shl eax,1 ; eax=eax* (2)^1=13*2
+    add result,eax ;result=104+26
+    mov eax,result  ;eax= 130
+    call writedec
+    exit
+main ENDP
+END main

@@ -1,0 +1,55 @@
+include irvine32.inc
+
+.data
+string byte "ronarld donar donarld bollarld",0
+substring byte "rld",0
+len dword lengthof string-1
+s_len dword lengthof substring-1
+count dword 0
+.code
+find_substring_freq proc uses esi edi ecx eax,strng:ptr byte, subst: ptr byte
+mov ecx, len
+
+mov ebx, strng
+mov edi,subst
+mov esi,0
+mov dh,[edi]
+L1:
+	mov dl,dh
+	cmp dl,[ebx+esi]
+	mov eax,esi
+	je check
+	back:
+	inc esi
+	mov edi,subst
+	
+	loop L1
+	ret
+check:
+	push esi
+	push ecx
+	mov ecx,s_len
+	L2:
+	
+	mov dl,[ebx+esi]
+	cmp dl,[edi]
+	jne skip
+	inc esi
+	inc edi
+	loop L2
+	; if this loop is over then it means we found the string 
+	inc count
+skip:
+	pop ecx
+	pop esi
+	jmp back
+
+find_substring_freq endp
+main proc
+invoke find_substring_freq,addr string, addr substring
+mov eax,count
+call writeint
+
+exit
+main ENDP
+END main

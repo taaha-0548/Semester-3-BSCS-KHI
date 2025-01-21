@@ -1,0 +1,57 @@
+INCLUDE Irvine32.inc
+
+.data
+arr dword 5,4,3,2,1
+
+.code
+MAIN PROC
+mov ecx,lengthof arr
+
+outer_loop:
+dec ecx ; to traverse n-i-1 times in each iteration
+cmp ecx,0 ; if ecx=0, then sorting is done
+je sorted ; jump to sorted section
+ mov esi,0  ; reset index to 0
+
+ inner_loop:
+	mov eax,[offset arr+ esi*type arr]            ;  load curr element
+	inc esi                                       ; to access next element (temporarily adding 1)
+	mov edx,[offset arr+esi*type arr]             ; load curr+1 element
+	dec esi 
+
+	cmp eax,edx                                   ; if ith element is greater than (i+1)th element,swap them
+
+	jg swap                                       ; jump to swap label
+	 
+	next:
+	inc esi                 ; increment index
+	cmp esi,ecx                                 ; if the index reaches the last unsorted position, move to outer loop
+	jl inner_loop 
+
+	jmp outer_loop
+
+
+	swap:
+	mov [offset arr+ esi*type arr],edx
+	inc esi
+	mov [offset arr+esi*type arr],eax
+	dec esi
+	jmp next
+
+sorted:
+	mov ecx,lengthof arr
+	mov esi,0
+
+	print:
+	mov eax,[offset arr +esi*type arr]
+	call writeint
+	call crlf
+	inc esi
+	loop print
+	exit
+
+
+main endp
+
+	
+end main

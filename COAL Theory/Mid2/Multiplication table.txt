@@ -1,0 +1,48 @@
+INCLUDE Irvine32.inc
+
+.data
+    s DWORD 0       ; Value for the multiplication table
+    format BYTE " x ", 0 ; Format string for multiplication
+    equal_sign BYTE " = ", 0 ; Format string for equals sign
+    prompt byte "Enter the number to print multiplication table: ",0
+.code
+main PROC
+    mov edx, offset prompt
+    call writestring
+    call readdec
+    mov s,eax
+
+    mov ecx, 1       ; Start with the first multiplier
+    ; multiplication table of s
+  multiplier:
+        
+      mov eax, s    ; Load the value of s into eax
+      call WriteDec  ; Print the value of s
+      
+      ; Print the multiplication format
+      mov edx, OFFSET format ; Load address of format string
+      call WriteString      ; Print " x "
+      
+      mov eax, ecx       ; Load the current multiplier into eax
+      call WriteDec       ; Print the multiplier
+      
+      ; Print equals sign
+      mov edx, OFFSET equal_sign ; Load address of equals sign
+      call WriteString      ; Print " = "
+
+      ; Calculate and print the result
+      mov eax, s          ; Reload the value of s into eax
+      mul ecx             ; Multiply eax by the current multiplier in ecx
+      call WriteDec       ; Print the result
+      
+      call Crlf          ; Move to the next line
+
+      inc ecx            ; Increment the multiplier
+      cmp ecx, 11        ; Check if we've reached the next multiplier (10 + 1)
+      jne multiplier      ; If not, repeat the loop
+
+  
+    exit
+main ENDP
+
+END main

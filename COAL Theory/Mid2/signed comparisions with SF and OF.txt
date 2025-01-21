@@ -1,0 +1,44 @@
+INCLUDE Irvine32.inc
+
+.data
+    a SDWORD -5                
+    b SDWORD 10              
+   equal_msg byte "Equal",0
+   greater_msg byte "a is Greater than b",0
+    smaller_msg byte "a is smaller than b",0
+.code
+main PROC
+    mov eax, a                ; Load EAX with first number (5)
+    mov ebx, b                ; Load EBX with second number (-10)
+
+    cmp eax, ebx              ; Compare EAX and EBX
+
+    ; Check for equality
+    jz equal                  ; Jump if EAX == EBX
+    
+    js check_overflow1 ; if SF=1
+    jmp check_overflow2 ; if SF=0
+
+ check_overflow1: ; here SF=1
+    cmp eax, ebx 
+        jo greater ; now if OF=1 , which means OF=SF therefore greater
+        jmp smaller ; else OF=0, which means OF!=SF therefore smaller
+ 
+ check_overflow2: ; here SF=0
+    cmp eax, ebx  
+        jno greater ;now if OF=0, which means OF=SF therefore greater
+        jmp smaller ; else OF=1, which means OF!=SF therefore smaller
+ equal:
+    mov edx, offset equal_msg
+    jmp exiting
+ smaller:
+    mov edx,offset smaller_msg
+    jmp exiting
+   greater:
+    mov edx,offset greater_msg
+exiting: 
+    call writestring
+
+    exit
+main ENDP
+END main

@@ -1,0 +1,41 @@
+INCLUDE Irvine32.inc
+
+;Create a program that converts a string to uppercase using string primitive instructions.
+.data
+
+arr byte "Hello World",0
+
+.code
+convert_to_upper proc uses esi edi eax ebx edx ecx, string :ptr byte, lent: dword
+mov esi,string
+mov edi,string
+mov ecx,lent
+dec ecx ; to account for the null character
+L1:
+	lodsb ; mov [esi] to al (incrementing esi)
+	cmp al,'a'
+	jl skip
+	cmp al,'z'
+	jg skip
+	; if lowercase then convert to upper
+	sub al,32
+	mov edi,esi ;now  edi points to esi+1
+	dec edi 
+	stosb ; mov al to [edi] 
+	
+	skip:
+	loop L1; continue traversing the string
+	
+	
+ret
+convert_to_upper endp
+
+main proc
+mov edx,offset arr
+
+
+invoke convert_to_upper, addr arr,lengthof arr
+call writestring
+  exit
+main ENDP
+END main

@@ -1,0 +1,58 @@
+INCLUDE Irvine32.inc
+; using string primitives to search 10 from one array 
+; in 500 unsorted elements of another array 
+
+
+.data
+arr1 dword 1,2,3,4,5,6,7,8,9,10
+arr2 dword 50  dup (1), 50 dup(3),50 dup(5),50 dup(7),100 dup(9),100 dup(8),100 dup(10)
+found_prompt byte "found: ",0
+not_found_prompt byte "Not found: ",0
+.code
+search_array proc uses esi edi eax ebx edx, one: ptr dword , two : ptr dword
+mov ecx,10 ; 10 values to search
+mov esi, one
+mov edi, two
+L1:
+	push ecx ; to save the counter for outer loop
+	mov ecx,500
+	mov eax,[esi]
+	L2:	
+		cmp eax,[edi]
+		je found
+		next:
+		 add edi,4
+		loop L2
+		jmp not_found
+		here:
+		pop ecx
+loop L1
+
+
+
+ret
+found:
+	mov edx, offset found_prompt
+	call writestring
+	call writeint
+	call crlf
+	add  esi,4
+	mov edi,two ; start checking from start again
+	jmp here
+not_found:
+	mov edx, offset not_found_prompt
+	call writestring 
+	call writedec
+	call crlf
+	add  esi,4
+	mov edi,two ; start checking from start again
+	jmp here
+search_array endp
+
+main proc
+invoke search_array,addr arr1, addr arr2
+
+
+  exit
+main ENDP
+END main

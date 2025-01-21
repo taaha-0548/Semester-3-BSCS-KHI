@@ -1,0 +1,45 @@
+INCLUDE Irvine32.inc
+
+.data
+
+int_arr dword 100 dup(0)
+.code
+main PROC
+; Initialize array for demonstration (Optional: Fill array with sample values)
+    mov esi, 0
+initialize_array:
+    cmp esi, 100               ; Loop until array is initialized
+    jge start_shift    ; Jump to shifting logic when done
+    mov [int_arr + esi*4], esi ; Fill each element with its index (int_arr[i] = i)
+    inc esi
+    jmp initialize_array
+    start_shift:
+    mov ecx,100
+    mov esi,0
+
+
+
+mov esi,98
+while_loop:
+    cmp esi,0
+    jl exiting
+   
+
+    mov eax,[int_arr+esi*4] 
+    inc esi
+    mov [int_arr+esi*4],eax
+    sub esi,2
+    jmp while_loop
+
+    exiting:
+    mov esi,0
+    mov ecx,100
+    printing:
+        mov eax,[int_arr+esi*4]
+        call writeint
+        inc esi
+        loop printing
+    
+    exit
+main ENDP
+END main

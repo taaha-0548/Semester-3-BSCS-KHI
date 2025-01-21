@@ -1,0 +1,49 @@
+INCLUDE Irvine32.inc
+; recursion: multiplication (repeated addition)
+
+
+.data
+multiplicand dword 5
+multiplier dword 6
+result dword 0
+
+.code
+multiplication proc uses edi eax edx, n:dword , m: dword ,r :ptr dword
+mov edx,n ; multiplicand
+mov eax,m ; multiplier
+
+mov edi,r ; result
+
+; base case: if multiplier is 0, result is zero
+cmp eax,0
+je zero_case
+
+; base_case : if multiplier is 1, result if multiplicand
+cmp eax,1
+je one_case
+
+dec eax
+invoke multiplication , edx, eax, edi
+mov eax,[edi]
+add eax,edx
+mov [edi],eax
+jmp done
+
+zero_case:
+	mov dword ptr[edi],0
+	jmp done
+one_case:
+	mov [edi],edx
+done:
+ret
+
+multiplication endp
+
+main proc
+
+invoke multiplication, multiplicand,multiplier, offset result
+mov eax,result
+call writeint
+  exit
+main ENDP
+END main

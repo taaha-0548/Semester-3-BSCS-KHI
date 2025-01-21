@@ -1,0 +1,40 @@
+INCLUDE Irvine32.inc
+
+;copy only even numbers from one array to another using primitive
+.data
+
+arr1 dword 5,13,16,2,11,9,25,15
+arr2 dword lengthof arr1 dup(0)
+count_even dword 0
+.code
+process_arr proc uses esi edi eax ebx edx ecx, one :ptr dword,two: ptr dword, len: dword
+mov esi,one
+mov edi,two
+mov ecx,len
+copy_loop:
+	lodsd ; copy [esi] to eax, increment esi by 4 (for dword)
+	test eax,1 ; test if lsb=1 (which means even)
+	jz is_even
+	next:
+	loop copy_loop
+ret
+is_even:
+	stosd ; copy eax to [edi],incrementing edi by 4
+	inc count_even
+	
+	jmp next
+process_arr endp
+
+main proc
+
+invoke process_arr, addr arr1, addr arr2,lengthof arr1
+mov ecx,count_even
+xor eax,eax
+mov esi,offset arr2
+print_loop:
+	lodsd
+	call writeint
+loop print_loop
+  exit
+main ENDP
+END main

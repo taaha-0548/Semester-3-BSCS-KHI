@@ -1,0 +1,67 @@
+INCLUDE Irvine32.inc
+.data
+; finding factors of a number
+number dword 15
+array dword 100 dup(0) 
+
+bool dword 0
+
+.code
+check_factor proc uses esi edx ebx ecx, n:dword, d :dword
+mov eax,n
+xor edx,edx
+div d
+cmp edx,0
+je yes
+ret
+yes:
+mov eax,1
+
+
+ret
+check_factor endp
+
+find_factors proc uses esi ecx eax ebx , n:dword, arr:ptr dword, count: dword
+mov esi,0
+mov edx,n
+shr edx,1  ; will find factors till n/2 
+mov ebx,arr
+mov ecx,1
+factoring:
+	cmp ecx,edx
+	je done
+	invoke check_factor, n,ecx
+	
+	
+	cmp eax,1
+	je add_factor
+	next:
+	inc ecx
+	jmp factoring
+add_factor:
+mov [ebx +esi*4],ecx
+inc esi
+inc count
+mov eax,0
+jmp next
+
+
+done:
+mov ecx, count
+mov esi,0
+print:
+	mov eax,[ebx+esi*4]
+	call writedec
+	call crlf
+	inc esi
+	loop print
+ret
+find_factors endp
+
+
+main proc    
+invoke find_factors , number, addr array, 0
+
+exit
+main ENDP
+END main

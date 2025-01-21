@@ -1,0 +1,31 @@
+include irvine32.inc
+
+.data
+; digital sum of a number
+n dword 9999
+sum dword 0
+
+.code
+Digital_sum proc
+	xor edx,edx
+	mov eax,n
+	mov ebx,10
+	Looper:
+		cmp eax,0
+		jle done
+		div ebx
+		add sum,edx
+		xor edx,edx
+		jmp looper
+
+	done:
+	
+	ret
+Digital_sum endp
+main proc
+call digital_sum
+mov eax,sum
+call writedec
+exit
+main ENDP
+END main
