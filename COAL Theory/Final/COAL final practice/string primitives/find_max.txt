@@ -1,0 +1,40 @@
+INCLUDE Irvine32.inc
+
+;finding maximum value in the array using string primitve
+
+.data
+prompt byte "Max value in the array is: ",0
+arr dword 5,13,16,2,11,9,25,15
+
+.code
+process_arr proc uses esi edi ebx edx ecx, int_arr:ptr byte, len: dword
+mov esi,int_arr
+mov ecx, len
+lodsd ; loading first element to eax as initial max (also increments esi)
+mov ebx,eax ;current max
+
+L1:
+	lodsd ; load the next element, increment esi
+	cmp eax, ebx
+	jg update_max
+	continue:
+	loop L1
+	
+	mov edx,offset prompt
+	call writestring
+	mov eax,ebx
+	call writeint
+
+
+ret
+	update_max:
+	mov ebx,eax ; updating the max
+		jmp continue
+process_arr endp
+
+main proc
+
+invoke process_arr, addr arr, lengthof arr
+  exit
+main ENDP
+END main

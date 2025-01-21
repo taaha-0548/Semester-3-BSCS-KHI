@@ -1,0 +1,49 @@
+INCLUDE Irvine32.inc
+
+.data
+n dword 5
+result dword 0
+
+.code
+fibonacci proc uses edx ebx esi, number:dword, r:ptr dword
+  mov esi, r
+    ; Base case check
+    mov eax, number
+    cmp eax, 2
+    jb base_case
+
+    ; Recursive calculation
+    mov ebx, number
+    dec ebx
+    invoke fibonacci, ebx, r  ; F(n-1)
+
+   
+    mov eax, [esi]
+    mov edx ,eax  ; Save F(n-1)
+
+    mov ebx, number
+    sub ebx, 2
+    invoke fibonacci, ebx, r  ; F(n-2)
+
+  
+   mov ebx,edx
+    add eax, ebx  ; F(n-1) + F(n-2)
+
+    
+    mov [esi], eax
+    ret
+
+base_case:
+    ; Direct return for 0 and 1
+   
+    mov [esi], eax
+    ret
+fibonacci endp
+
+main proc
+    invoke fibonacci, n, offset result
+    mov eax, result
+    call writeint
+    exit
+main ENDP
+END main

@@ -1,0 +1,66 @@
+include irvine32.inc
+
+.data
+array dword 1,2,3,4,5,6,7,8,9,10
+odd_arr dword 10 dup(0)
+even_arr dword 10 dup(0)
+len dword lengthof array
+.code
+odd_even proc
+ push ebp
+ mov ebp,esp
+ mov ebx,[ebp+20]
+ mov esi,[ebp+16]
+ mov edi,[ebp+12]
+ mov ecx,[ebp+8]
+ looper:
+	mov eax,[ebx]
+	test eax,1
+	jne addodd
+	mov [edi],eax
+	add edi,4
+	jmp next
+ addodd:
+	mov [esi],eax
+	add esi,4
+	jmp next
+ next:
+	add ebx,4
+	loop looper
+	pop ebp
+	ret
+	
+ 
+
+odd_even endp
+
+printing proc uses ecx esi,pointer:ptr dword,count:dword
+mov esi,pointer
+mov ecx,count
+print_loop:
+	mov eax,[esi]
+	call writedec
+	xor eax,eax
+	mov al,20h
+	call writechar
+	add esi,4
+loop print_loop
+
+ret 
+printing endp
+main proc
+push offset array
+push offset odd_arr
+push offset even_arr
+push len
+
+call odd_even
+
+invoke printing, addr array, len
+call crlf
+invoke printing, addr odd_arr, 5
+call crlf
+invoke printing, addr even_arr, 5
+exit
+main ENDP
+END main

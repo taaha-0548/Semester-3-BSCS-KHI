@@ -1,0 +1,44 @@
+INCLUDE Irvine32.inc
+
+.data
+    unsignedNum DWORD 5          ; Starting value of 5 (unsigned example)
+    signedNum DWORD -16          ; Starting value of -16 (signed example)
+
+.code
+main PROC
+    ; ----- Unsigned Example -----
+    mov eax, unsignedNum         ; Load the unsigned number into EAX
+    
+    ; Multiply EAX by 4 (2^2) using SHL (logical shift left)
+    shl eax, 2                   ; EAX = EAX * 4 (EAX should be 20)
+    
+    ; Display the result
+    call WriteDec                ; Display the result in EAX (should be 20)
+    call CrLf                    ; Move to the next line
+    
+    ; Divide EAX by 2 (2^1) using SHR (logical shift right)
+    shr eax, 1                   ; EAX = EAX / 2 (EAX should be 10)
+    
+    ; Display the result
+    call WriteDec                ; Display the result in EAX (should be 10)
+    call CrLf                    ; Move to the next line
+
+    ; ----- Signed Example -----
+    mov eax, signedNum           ; Load the signed number into EAX
+    
+    ; Multiply EAX by 4 (2^2) using SHL (logical shift left)
+    shl eax, 2                   ; EAX = EAX * 4 (EAX should be -64)
+    
+    ; Display the result
+    call Writeint              ; Display the result in EAX (should be -64)
+    call CrLf                    ; Move to the next line
+    
+    ; Divide EAX by 2 (2^1) using SAR (arithmetic shift right)
+    sar eax, 1           a        ; EAX = EAX / 2 (EAX should be -32)
+    
+    ; Display the result
+    call Writeint               ; Display the result in EAX (should be -32)
+    
+    exit
+main ENDP
+END main

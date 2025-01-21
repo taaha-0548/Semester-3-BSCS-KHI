@@ -1,0 +1,43 @@
+INCLUDE Irvine32.inc
+
+.data
+  multiplier dword 3
+  multiplicand dword 4
+  adder dword 5
+  msg byte "The result is ",0
+
+.code
+  multiply proc
+      push ebp  ; saving the base ebp
+      mov ebp,esp  ;establish a new stack frame
+      mov eax,[ebp+8] ;loading the multiplicand
+      imul eax, [ebp+12] ; multiplying with multiplier
+      
+      pop ebp ; resotre the old base pointer
+      ret 8 ; cleaning the memory
+multiply endp
+
+   adding proc
+        push ebp
+        mov ebp,esp
+        add eax,[ebp+8]
+        
+        pop ebp
+        ret 4
+    adding  endp
+        
+    
+main PROC
+   push  multiplier
+   push multiplicand
+   call multiply
+
+   push adder
+   call adding
+   mov edx,offset msg
+   call writestring
+   call writeint
+
+    exit
+main ENDP
+END main

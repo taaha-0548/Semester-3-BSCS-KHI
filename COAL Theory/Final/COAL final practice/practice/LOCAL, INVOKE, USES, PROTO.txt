@@ -1,0 +1,55 @@
+INCLUDE Irvine32.inc
+.data
+ areaMsg BYTE "The area is: ", 0
+    perimeterMsg BYTE "The perimeter is: ", 0
+.code
+CalculateAreaAndPerimeter PROTO,
+    len:DWORD,
+    wid:DWORD
+  CalculateAreaAndPerimeter PROC,
+    len:DWORD,
+    wid:DWORD
+
+    LOCAL area:DWORD              ; Local variable to store area
+    LOCAL perimeter:DWORD         ; Local variable to store perimeter
+
+    ; Calculate area
+    mov eax, len              ; Load len into EAX
+    mul wid                    ; Multiply EAX by wid to get the area
+    mov area, eax                ; Store the result in the local variable 'area'
+
+    ; Calculate perimeter
+    mov eax, len              ; Load len into EAX
+    add eax, wid               ; Add wid to EAX
+    mov ebx, 2                   ; Move 2 into EBX
+    mul ebx                      ; Multiply by 2 (len + wid) * 2
+    mov perimeter, eax           ; Store the result in 'perimeter'
+
+    ; Move results to return registers
+    mov eax, area                ; Move area into EAX to return it
+    mov ebx, perimeter           ; Move perimeter into EBX to return it
+
+    ret                          ; Return
+CalculateAreaAndPerimeter ENDP
+main PROC
+xor eax,eax
+xor ebx,ebx
+; Call the procedure using INVOKE
+    INVOKE CalculateAreaAndPerimeter, 5, 3   ; Pass len = 5, wid = 3
+
+    ; Display area (result in EAX)
+    mov edx, OFFSET areaMsg
+    call WriteString
+    call WriteDec                 ; EAX already holds the area
+    call Crlf                     ; Move to the next line
+
+    ; Display perimeter (result in EBX)
+    mov edx, OFFSET perimeterMsg
+    call WriteString
+    mov eax, ebx                  ; Move the perimeter from EBX to EAX for printing
+    call WriteDec
+    call Crlf                     ; Move to the next line
+
+    exit
+main ENDP
+END main

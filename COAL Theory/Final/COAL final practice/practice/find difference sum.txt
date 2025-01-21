@@ -1,0 +1,40 @@
+INCLUDE Irvine32.inc
+; sum of all the gaps between successive array elements
+
+
+.data
+arr dword 0,2,5,9,10
+diff_sum dword 0
+
+	
+
+.code
+find_diff_sum proc uses esi edi ebx ecx eax, int_arr: ptr dword, s: ptr dword, len: dword
+	
+	mov ecx,len 
+	dec ecx; traverse till length-1
+	mov ebx,int_arr
+	mov esi,1
+	mov edi,0
+	mov edx,s
+	traversal:
+		mov eax,[ebx+esi*4]
+		sub eax,[ebx+edi*4]
+		add [edx],eax
+		inc esi 
+		inc edi
+	 loop traversal
+ret
+find_diff_sum endp
+
+main proc
+mov eax, lengthof arr
+call writedec
+call crlf
+invoke find_diff_sum ,addr arr ,addr diff_sum ,lengthof arr
+mov eax,diff_sum
+call writedec
+
+  exit
+main ENDP
+END main

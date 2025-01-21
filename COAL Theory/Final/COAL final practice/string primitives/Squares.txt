@@ -1,0 +1,40 @@
+INCLUDE Irvine32.inc
+
+;replace each element of a given array by its square using string primitive instructions.
+.data
+
+arr dword 1,2,3,4,5,6,7,8,9,10
+
+.code
+square_arr proc uses esi edi eax ebx edx ecx, int_arr :ptr dword, lent: dword
+mov esi,int_arr
+mov edi,int_arr
+mov ecx,lent
+
+L1:
+
+	lodsd ; mov [esi] to eax (incrementing esi)
+	imul eax,eax; square
+	stosd  ; store eax to [edi] (incrementing edi)
+	loop L1
+	
+	
+ret
+ square_arr endp
+
+main proc
+
+
+
+invoke square_arr, addr arr,lengthof arr
+mov ecx, lengthof arr
+
+mov esi,offset arr
+L1:
+	lodsd
+	call writeint
+	
+	loop L1
+  exit
+main ENDP
+END main

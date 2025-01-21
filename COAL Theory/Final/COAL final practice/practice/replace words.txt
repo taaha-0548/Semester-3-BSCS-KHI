@@ -1,0 +1,122 @@
+include irvine32.inc
+
+.data
+string byte "hello universe how are you universe?",0
+to_replace byte "universe",0
+temp_string byte 100 dup(0)
+new_word byte "world",0
+index dword -1
+len dword lengthof string-1
+s_len dword lengthof to_replace-1
+n_len dword lengthof new_word-1
+result byte 200 dup(0)  ; Larger buffer to hold the final result
+
+.code
+find_substring proc uses esi edi ecx eax,strng:ptr byte, subst: ptr byte
+ 
+    mov ecx, len
+
+    mov ebx, strng
+    mov edi, subst
+
+    L1:
+        push esi  ; Save current position
+        mov dh, [edi]
+        mov dl, dh
+        cmp dl, [ebx+esi]
+        je check
+    back:
+        pop esi  ; Restore position
+        inc esi
+        mov edi, subst
+        
+        loop L1
+        mov index, -1  ; Not found
+        jmp exiting
+    
+    check:
+        push esi
+        push ecx
+        mov ecx, s_len
+    L2:
+        mov dl, [ebx+esi]
+        cmp dl, [edi]
+        jne not_found
+        inc esi
+        inc edi
+        loop L2
+        ; If this loop is over then it means we found the string 
+        mov index, esi
+        pop ecx
+        pop esi
+    exiting:
+    ret
+    
+    not_found:
+        pop ecx
+        pop esi
+        jmp back
+find_substring endp
+
+replace_all proc uses esi edi ecx
+    mov esi, offset string
+    mov edi, offset result
+    mov ecx, len
+    
+    replace_loop:
+        ; Find next occurrence
+        push esi
+        push edi
+        push ecx
+        invoke find_substring, esi, offset to_replace
+        
+        ; If not found, copy rest of string and exit
+        cmp index, -1
+        je copy_remaining
+        
+        ; Copy substring before match
+        pop ecx
+        pop edi
+        pop esi
+        
+        ; Copy characters before match
+        mov ebx, index
+        sub ebx, esi
+        mov ecx, ebx
+        rep movsb
+        
+        ; Copy replacement word
+        push esi
+        mov esi, offset new_word
+        mov ecx, n_len
+        rep movsb
+        pop esi
+        
+        ; Move past replaced substring
+        add esi, index
+        add esi, s_len
+        
+        ; Continue searching
+        jmp replace_loop
+    
+    copy_remaining:
+        ; Copy remaining characters
+        pop ecx
+        pop edi
+        pop esi
+        rep movsb
+    
+    ret
+replace_all endp
+
+main proc
+    invoke replace_all
+    
+    ; Display result
+    mov edx, offset result
+    call writestring
+    call crlf
+    
+    exit
+main ENDP
+END main

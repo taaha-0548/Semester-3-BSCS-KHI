@@ -1,0 +1,30 @@
+INCLUDE Irvine32.inc
+; recursion: sum array
+.data
+len dword 5
+arr dword 1,2,3,4,5
+result dword 0
+.code
+sum_arr proc uses edx eax ecx ebx esi, int_arr:ptr dword, index: dword ,lenth:dword, r: ptr dword
+   mov edi,r
+   mov ebx,int_arr
+   mov esi,index
+   cmp esi,lenth
+   je done
+   inc esi
+   invoke sum_arr, ebx,esi,lenth,edi
+   mov esi,index 
+   mov eax,[ebx+esi*4]
+   add [edi],eax
+
+   done:
+    ret
+sum_arr endp
+
+main proc
+    invoke sum_arr,addr arr,0, len, addr result
+    mov eax, result
+    call writeint
+    exit
+main ENDP
+END main

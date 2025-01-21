@@ -1,0 +1,129 @@
+include irvine32.inc
+
+.data
+one DWORD 2
+two DWORD 3
+three DWORD 5
+four DWORD 7
+largest DWORD ?
+prime_arr DWORD 4 DUP(0)
+
+.code
+prime_checker PROC
+    ; Preserve original number
+    push eax
+    mov ecx, eax
+
+    ; Check for small numbers
+    cmp eax, 2
+    jl not_prime
+    je is_prime
+
+    ; Prime checking logic
+    mov ebx, 2
+check_loop:
+    mov eax, ecx  ; Restore original number
+    mov edx, 0    ; Clear dividend high part
+    div ebx       ; Divide by current divisor
+    
+    cmp edx, 0    ; Check remainder
+    je not_prime  ; If remainder is 0, not prime
+    
+    inc ebx       ; Next divisor
+    cmp ebx, ecx  ; Compare divisor with number
+    jl check_loop ; Continue checking
+
+is_prime:
+    pop eax       ; Restore stack
+    mov eax, 1    ; Return 1 (prime)
+    ret
+
+not_prime:
+    pop eax       ; Restore stack
+    mov eax, 0    ; Return 0 (not prime)
+    ret
+prime_checker ENDP
+
+largest_prime PROC
+    mov ecx, 4
+    mov esi, 0
+    mov largest, 0
+
+find_largest:
+    mov edx, [prime_arr + esi * 4]
+    cmp edx, largest
+    jg update_largest
+continue_loop:
+    inc esi
+    loop find_largest
+    ret
+
+update_largest:
+    mov largest, edx
+    jmp continue_loop
+largest_prime ENDP
+
+main PROC
+    ; Check primality and store primes
+    mov eax, one
+    call prime_checker
+    cmp eax, 1
+    jne skip_one
+    mov eax, one
+    mov [prime_arr], eax
+
+skip_one:
+    mov eax, two
+    call prime_checker
+    cmp eax, 1
+    jne skip_two
+    mov eax, two
+    mov [prime_arr + 4], eax
+
+skip_two:
+    mov eax, three
+    call prime_checker
+    cmp eax, 1
+    jne skip_three
+    mov eax, three
+    mov [prime_arr + 8], eax
+
+skip_three:
+    mov eax, four
+    call prime_checker
+    cmp eax, 1
+    jne skip_four
+    mov eax, four
+    mov [prime_arr + 12], eax
+
+skip_four:
+    ; Check if any primes found
+    mov ecx, 4
+    mov esi, 0
+    xor eax, eax  ; Zero out eax
+
+check_primes_loop:
+    mov edx, [prime_arr + esi * 4]
+    cmp edx, 0
+    jne primes_exist
+    inc esi
+    loop check_primes_loop
+    jmp no_primes
+
+primes_exist:
+    ; Find largest prime
+    call largest_prime
+    
+    ; Display largest prime
+    mov eax, largest
+    call WriteDec
+    call Crlf
+    jmp end_program
+
+no_primes:
+ 
+
+end_program:
+    exit
+main ENDP
+END main

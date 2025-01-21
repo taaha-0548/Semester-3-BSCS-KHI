@@ -1,0 +1,49 @@
+INCLUDE Irvine32.inc
+.data
+; recursion: search value/ character in array/string 
+string byte "Hello World",0
+char_to byte ?
+prompt byte "Enter a character to search for in the string: ",0
+f_prompt byte "Found at index: ",0
+n_prompt byte "Not found",0
+
+.code
+search_character proc uses esi ecx eax ebx edx , arr: ptr byte, index: dword, arr_length: dword
+mov ebx,arr
+mov esi,index
+ 
+cmp esi, arr_length ;  -1 to for null character.
+jg not_found 
+
+mov al,[ebx+esi]
+cmp al,char_to
+je found
+inc esi
+invoke search_character ,arr,esi,arr_length
+ret
+found:
+mov edx,offset f_prompt
+call writestring
+   mov eax,esi
+  call writedec
+  call crlf
+  ret
+
+not_found:
+mov edx,offset n_prompt
+call writestring
+
+ret
+search_character endp
+
+
+main proc    
+lea edx,offset prompt
+call writestring
+call readchar
+call crlf
+mov char_to, al
+invoke search_character,addr string, 0, lengthof string
+    exit
+main ENDP
+END main

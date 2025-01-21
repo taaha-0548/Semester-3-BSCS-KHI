@@ -1,0 +1,52 @@
+INCLUDE Irvine32.inc
+
+;printing offset of words starting with letter other than e
+.data
+
+arr byte "each other eager eagerly v3car eagerness foxy eagle-eyed earache",0
+
+.code
+process_arr proc uses esi edi ebx edx ecx, string:ptr byte, len: dword
+
+mov esi,string
+mov edi,string
+inc edi
+mov ecx,len
+dec ecx ; to account for the null character
+
+L1:
+mov al,20h ;space
+mov ah,[esi]
+repne scasb ;while ecx!=0 and al!= [edi]
+
+jcxz done ; jump if ecx=0
+jmp check_e ; now checking the first letter if its e
+next:
+inc edi
+jmp L1
+
+
+	
+done:
+ret
+check_e:
+mov al,[edi]
+cmp al,'e'
+je next ; dont need to do anything
+call writechar
+call crlf
+mov eax,edi
+call writehex
+call crlf
+
+
+jmp next
+	
+process_arr endp
+
+main proc
+mov ebx, offset arr
+invoke process_arr, addr arr, lengthof arr
+  exit
+main ENDP
+END main

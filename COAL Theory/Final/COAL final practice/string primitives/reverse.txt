@@ -1,0 +1,54 @@
+INCLUDE Irvine32.inc
+;reverse string using string primitve instructions
+
+
+.data
+arr byte "hello world",0
+
+ 
+.code
+reverse proc uses esi edi eax, string :ptr byte , len:dword
+mov esi,string
+mov ecx,len
+dec ecx
+mov edi,esi
+add edi, ecx
+dec edi
+shr ecx,1 ; to swap the characters till n/2
+jmp start
+swapping:
+pop edi
+pop esi
+start:
+cld
+lodsb ; mov al,[esi]
+		;inc esi
+
+std
+mov ah,[edi] 
+stosb ;mov [edi],al
+		;dec edi
+
+cld
+push esi
+push edi
+inc edi
+dec esi
+xchg esi,edi
+mov al,ah
+stosb
+
+loop swapping
+	
+ret
+reverse endp
+
+main proc
+invoke reverse, addr arr, lengthof arr
+mov edx,offset arr
+call writestring
+
+
+  exit
+main ENDP
+END main

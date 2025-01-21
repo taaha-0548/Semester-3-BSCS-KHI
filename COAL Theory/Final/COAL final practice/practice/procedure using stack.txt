@@ -1,0 +1,15 @@
+; Template for a procedure that uses the stack
+MyProcedure PROC
+    push ebp                  ; Save the old base pointer
+    mov ebp, esp              ; Establish a new stack frame
+
+    ; Access parameters using EBP
+    mov eax, [ebp + 8]        ; Load first parameter into EAX
+    add eax, [ebp + 12]       ; Add second parameter to EAX
+    ; Perform other operations here as needed
+
+    pop ebp                   ; Restore the old base pointer
+    ret 8                     ; Clean up stack (8 bytes) and return
+MyProcedure ENDP
+
+END main

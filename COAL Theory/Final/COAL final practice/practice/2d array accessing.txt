@@ -1,0 +1,28 @@
+include irvine32.inc
+.data
+    arr DWORD 1, 2, 
+                 3, 4 
+   row =2
+   col =2
+   ri dword 1 ; 0 based 
+   ci dword 0
+   
+.code
+main PROC
+    ; Access second row, first column (element 3)
+    mov eax,row ; no of rows
+    mul ri ; multiply by the row number
+    add eax,ci  ; adding column number
+  
+    mov esi,eax
+    
+    mov eax,[arr+esi*4]
+   
+  
+
+    call WriteInt       ; Print the accessed element
+    call Crlf
+
+  
+main ENDP
+END main

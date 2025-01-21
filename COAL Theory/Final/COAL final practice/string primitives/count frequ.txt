@@ -1,0 +1,41 @@
+INCLUDE Irvine32.inc
+
+;count frequency of a specific number in the array
+
+.data
+
+arr word 1,2,3,4,5,2,3,7,2,10
+
+.code
+process_arr proc uses esi edi ebx eax edx ecx, int_arr:ptr word, len: dword, to_count: word
+	mov ax,to_count
+	mov edi, int_arr
+	mov ecx, len
+	mov edx,0
+	L1:
+	repne scasw ;scan while ecx!=0 and ax!=[edi]
+	jcxz done ; jump if ecx=0 
+	inc edx ; if ecx!=0 and ax==[edi], increment count
+	next: ; continue 
+	jmp L1
+
+
+
+	jmp next
+	done:
+	mov eax, edx
+	call writedec
+	 ret
+
+
+
+
+	
+process_arr endp
+
+main proc
+
+invoke process_arr, addr arr, lengthof arr, 2
+  exit
+main ENDP
+END main
