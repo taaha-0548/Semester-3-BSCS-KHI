@@ -1,0 +1,124 @@
+include irvine32.inc
+.data
+prompt byte "Enter the string to count vowels: ",0
+string byte 1000 dup(0)
+vowel_a dword 0
+vowel_e dword 0
+vowel_i dword 0
+vowel_o dword 0
+vowel_u dword 0
+final_msg byte "Vowel counts: ",0
+a_msg byte "a or A: ",0
+e_msg byte "e or E: ",0
+o_msg byte "o or O: ",0
+i_msg byte "i or I: ",0
+u_msg byte "u or U: ",0
+
+.code
+CountVowel Proc
+mov esi,0
+mov ecx,lengthof string
+
+counting_loop:
+	mov al,[ebx+esi]
+	cmp al,'a'
+	je inc_a
+	cmp al,'A'
+	je inc_a
+	cmp al,'E'
+	je inc_e
+	cmp al,'e'
+	je inc_e
+	cmp al,'i'
+	je inc_i
+	cmp al,'I'
+	je inc_i
+	cmp al,'o'
+	je inc_o
+	cmp al,'O'
+	je inc_o
+	cmp al,'u'
+	je inc_u
+	cmp al,'U'
+	je inc_u
+	next:
+	 inc esi
+	 loop counting_loop
+	ret
+	inc_a:
+		inc vowel_a
+		jmp next
+	inc_e:
+		inc vowel_e
+		jmp next
+	inc_i:
+		inc vowel_i
+		jmp next
+	inc_o:
+		inc vowel_o
+		jmp next
+	inc_u:
+		inc vowel_u
+		jmp next
+
+CountVowel endp
+DisplayVowelCount proc
+	mov edx,offset final_msg 
+	call writestring
+	call crlf
+	xor eax,eax
+	mov edx,offset a_msg
+	call writestring
+	mov eax,vowel_a
+	call writedec
+	call crlf
+	mov edx,offset e_msg
+	call writestring
+	mov eax,vowel_e
+	call writedec
+	call crlf
+	mov edx,offset i_msg
+	call writestring
+	mov eax,vowel_i
+	call writedec
+	call crlf
+	mov edx,offset o_msg
+	call writestring
+	mov eax,vowel_o
+	call writedec
+	call crlf
+	mov edx,offset u_msg
+	call writestring
+	mov eax,vowel_u
+	call writedec
+	
+	
+	ret
+DisplayVowelCount endp
+
+
+
+main proc
+mov edx,offset prompt
+call writestring
+
+
+mov ecx,100
+mov edx,offset string
+call readstring
+xor eax,eax
+
+mov ebx,offset string
+
+
+call CountVowel
+
+call DisplayVowelCount
+
+
+
+
+
+exit
+main endp
+end main

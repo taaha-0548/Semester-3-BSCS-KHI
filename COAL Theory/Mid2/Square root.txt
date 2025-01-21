@@ -1,0 +1,74 @@
+INCLUDE Irvine32.inc
+;square root of integers (give floor value back). Example: squareroot(24)= 4
+.data
+n dword 0
+l dword 0
+r dword 0
+m dword 0
+result dword 0
+user_prompt byte "Enter a non-negative integer:",0
+sq_prompt byte "The square root (floor) is: ",0
+.code
+MAIN PROC
+mov edx, offset user_prompt
+call writestring
+call crlf
+call readdec ; user inputs a non negative integer
+mov n,eax  ; save user input value in n
+mov l,1  ; start by left =1
+mov r, eax	; and right = n 
+
+
+square_root:
+	mov edx,l
+	cmp edx,r ; checking if left<right 
+	jnc output
+
+	jmp find_mid ; to find mid
+
+	continue:
+	 mov eax,m  ; now checking if mid*mid = n
+	 mul eax 
+	 cmp eax, n 
+	 jz exact 
+	 jc less
+
+greater:
+	dec m    ;right =mid-1
+	mov edx,m
+	mov r,edx
+	jmp square_root
+
+less:
+	mov edx,m ; left= mid +1
+	mov result,edx ; saving the floor value in case if exact square root not found
+	inc m
+	mov edx,m
+	mov l,edx
+	jmp square_root
+
+exact:
+	mov edx,m
+	mov result,edx
+	jmp output
+
+output:
+	mov edx, offset sq_prompt
+	call writestring
+	mov eax,result
+	call writedec
+
+
+exit
+find_mid:
+	mov eax,l  
+	mov edx,r
+	add m,eax 
+	add m,edx
+	shr m,1
+	jmp continue
+
+main endp
+
+	
+end main

@@ -1,0 +1,99 @@
+INCLUDE Irvine32.inc
+; An array is given from 0 to 9.
+; A user input is given (integer)
+; check if the integer is positive or negative
+; and the numbers greater than, equal to and less than the user input.
+
+.data
+  arr dword 0,1,2,3,4,5,6,7,8,9
+  count_greater dword 0
+  count_equal dword 0
+  count_less dword 0
+  input dword ?
+  user_prompt byte "Enter an integer:",0
+  is_positive byte "It is a positive numeber",0
+  is_negative byte "It is a negative number",0
+  greater_msg byte "Numbers greater than input: ", 0
+    equal_msg byte "Numbers equal to input: ", 0
+    less_msg byte "Numbers less than input: ", 0
+.code
+
+main PROC
+    mov edx, offset user_prompt
+    call writestring
+    ; assuming the user input is not zero
+    call readint
+    mov input, eax
+    
+    cmp input,0
+     jg l_positive
+
+     
+    mov edx, offset is_negative
+    call writestring
+    call crlf
+    jmp counting_numbers
+
+
+    l_positive:
+    mov edx, offset is_positive
+     call writestring
+     call crlf
+
+
+
+
+    ; now counting the greater,equal to and lesser numbers
+    counting_numbers:
+    mov ecx,10
+    
+    mov esi,0
+
+    comparison:
+     mov eax,input
+     cmp eax, arr[esi*4]
+     jz is_equal
+     jc is_less
+    ; now if its not less than or equal ,then we its obviously greater
+     inc count_greater
+
+     jmp continue_loop
+
+     is_equal:
+      inc count_equal
+      jmp continue_loop
+    
+     is_less:
+     inc count_less
+     jmp continue_loop
+
+     continue_loop:
+      inc esi
+     loop comparison
+     
+    mov edx,offset greater_msg
+    call writestring
+    mov eax,count_greater
+    call writeint
+    call crlf
+
+     mov edx,offset less_msg
+    call writestring
+    mov eax,count_less
+    call writeint
+    call crlf
+
+     mov edx,offset equal_msg
+    call writestring
+    mov eax,count_equal
+    call writeint
+    call crlf
+
+    
+
+
+  
+    exit
+main ENDP
+
+END main

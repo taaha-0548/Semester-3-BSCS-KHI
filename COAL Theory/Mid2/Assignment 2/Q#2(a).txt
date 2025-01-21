@@ -1,0 +1,56 @@
+INCLUDE Irvine32.inc
+
+.data
+
+message byte "computer organization and assembly language",0
+toReplace byte ? ; input a character that need to be replace by a space
+msgFound byte "Here is the updated array or string",0
+msgNFound byte "Sorry, character not found in the array or string:",0
+user_prompt byte "Enter a character to replace with @:",0
+
+.code
+main PROC
+ xor eax,eax
+ mov edx,offset user_prompt
+ call writestring
+call crlf
+ call readchar
+ mov toReplace,al
+ mov esi,0
+ mov ecx, lengthof message
+ 
+Replace_with_@:
+    mov al,[message+esi]
+    cmp al,toReplace
+    je switch_with
+    next_index:
+        inc esi
+    loop Replace_with_@
+    jmp to_printing
+    switch_with:
+       mov dh,1 ; using as a checker, if there was switch
+       mov al,'@'
+       mov [message+esi],al
+       jmp next_index
+
+
+    to_printing:
+      cmp dh,1
+      jne not_switched
+      mov edx,offset msgFound 
+      call writestring
+      call crlf
+      mov edx,offset message
+      jmp print_now
+    not_switched:
+        mov edx, offset msgNFound
+    print_now:
+        call writestring
+     
+
+
+
+    
+    exit
+main ENDP
+END main

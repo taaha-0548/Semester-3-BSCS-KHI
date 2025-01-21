@@ -1,0 +1,46 @@
+INCLUDE Irvine32.inc
+; prime number checker.
+.data
+n dword 0
+prime_msg byte "It's a prime",0
+not_prime_msg byte "It's not a prime",0
+
+.code
+MAIN PROC
+call readint ; considering the user input a natural number.
+mov n,eax   ; save value in n
+cmp eax,2  ; comparing value to 2
+jl not_prime ; if n<2, then its not a prime
+
+mov ecx,2 ; start by checking from 2
+]
+
+is_prime:
+	mov eax,n
+	xor edx, edx            ; Clear EDX before using DIV
+	div ecx ; eax = eax/ecx  and remainder will be stored in edx
+	cmp edx,0  ; checking if the remainder is zero
+	je not_prime ; then its not a prime
+	inc ecx   ; incrementing ecx 
+	cmp ecx,n  ; if the number reachers to the given number then its a prime and exit
+	jl is_prime ; if its less then jump back and check the next number
+
+mov edx,offset prime_msg ; loading prime msg
+jmp exiting ; jumping to print
+not_prime: 
+mov edx,offset not_prime_msg
+exiting:
+call writestring
+
+
+
+
+	
+
+
+exit
+
+main endp
+
+	
+end main
